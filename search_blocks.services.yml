@@ -1,0 +1,4 @@
+services:
+  plugin.manager.search_block_plugin:
+    class: Drupal\search_blocks\SearchBlockPluginManager
+    parent: default_plugin_manager
