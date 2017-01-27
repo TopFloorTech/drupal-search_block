@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\SearchBlockPlugin;
+namespace Drupal\search_block\Plugin\SearchBlockPlugin;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginDependencyTrait;
-use Drupal\search_blocks\Plugin\Block\SearchBlockInterface;
+use Drupal\search_block\Plugin\Block\SearchBlockInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -145,4 +145,11 @@ abstract class SearchBlockPluginBase extends PluginBase implements SearchBlockPl
    * {@inheritdoc}
    */
   public function processSearch(FormStateInterface $formState) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getId() {
+    return $this->pluginId;
+  }
 }

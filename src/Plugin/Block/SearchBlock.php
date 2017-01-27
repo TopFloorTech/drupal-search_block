@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\Block;
+namespace Drupal\search_block\Plugin\Block;
 
 use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Block\Annotation\Block;
-use Drupal\search_blocks\SearchBlockPluginManager;
+use Drupal\search_block\SearchBlockPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @Block(
- *   id = "search_blocks_search_block",
+ *   id = "search_block_search_block",
  *   admin_label = @Translation("Search block"),
  *   category = @Translation("Search Blocks")
  * )
@@ -26,11 +26,14 @@ class SearchBlock extends SearchBlockBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    /** @var SearchBlockPluginManager $searchBlockHandlerManager */
+    $searchBlockHandlerManager = $container->get('plugin.manager.search_block_plugin');
+
     return new static(
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('plugin.manager.search_block_plugin')
+      $searchBlockHandlerManager
     );
   }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\SearchBlockPlugin;
+namespace Drupal\search_block\Plugin\SearchBlockPlugin;
 
 use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\search_blocks\Annotation\SearchBlockPlugin;
+use Drupal\search_block\Annotation\SearchBlockPlugin;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -36,16 +36,17 @@ class Redirect extends SearchBlockPluginBase {
   }
 
   public function processSearch(FormStateInterface $formState) {
-    dpm('Processing');
-
     if (isset($this->searchBlock)) {
       $config = $this->searchBlock->getConfiguration();
       $path = $config['redirect_path'];
 
-      dpm($path);
+      // Temporary override
+      $path = '/search/site/' . $formState->getValue('keys', '');
 
       if (!empty($path)) {
-        return new RedirectResponse($path);
+        $url = \Drupal::pathValidator()->getUrlIfValid($path);
+
+        $formState->setRedirect($url->getRouteName(), $url->getRouteParameters());
       }
     }
   }

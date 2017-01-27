@@ -1,4 +1,4 @@
-name: Search Blocks
+name: Search Block
 type: module
 description: 'A highly-customizable replacement for the core basic search block which supports any destination.'
 version: 8.x-1.x

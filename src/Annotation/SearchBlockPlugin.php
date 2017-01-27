@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\search_blocks\Annotation;
+namespace Drupal\search_block\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

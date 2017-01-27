@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\Block;
+namespace Drupal\search_block\Plugin\Block;
 
 use Drupal\Core\Block\BlockPluginInterface;
-use Drupal\search_blocks\Plugin\SearchBlockPlugin\SearchBlockPluginInterface;
-use Drupal\search_blocks\SearchBlockPluginManager;
+use Drupal\search_block\Plugin\SearchBlockPlugin\SearchBlockPluginInterface;
+use Drupal\search_block\SearchBlockPluginManager;
 
 interface SearchBlockInterface extends BlockPluginInterface {
   /**
@@ -14,12 +14,4 @@ interface SearchBlockInterface extends BlockPluginInterface {
    *   The search block plugins.
    */
   public function getEnabledPlugins();
-
-  /**
-   * Gets a search block plugin manager instance.
-   *
-   * @return SearchBlockPluginManager
-   *   The search block plugin manager instance.
-   */
-  public function getPluginManager();
 }

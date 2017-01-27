@@ -1,26 +1,25 @@
 <?php
 
-namespace Drupal\search_blocks\Form;
+namespace Drupal\search_block\Form;
 
-use Drupal\block\Entity\Block;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\search_blocks\Plugin\Block\SearchBlockInterface;
+use Drupal\search_block\Plugin\SearchBlockPlugin\SearchBlockPluginInterface;
+use Drupal\views\Entity\View;
 
 /**
  * Provides a base implementation of a search block form.
  */
 class SearchBlockFormBase extends FormBase implements SearchBlockFormInterface {
 
-  /** @var SearchBlockInterface */
-  var $searchBlock = NULL;
+  /** @var SearchBlockPluginInterface[] */
+  var $plugins = [];
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    // TODO: Unique form ID per block instance
-    return 'search_blocks_search_block_form';
+    return 'search_block_search_block_form';
   }
 
   /**
@@ -33,17 +32,23 @@ class SearchBlockFormBase extends FormBase implements SearchBlockFormInterface {
 
     $values = $form_state->getValues();
 
+    $keyValue = isset($values['keys']) ? $values['keys'] : $defaultValues['keys'];
+
+    if (empty($keyValue)) {
+      $keyValue = $this->getKeysFromUrl();
+    }
+
     $form['keys'] = [
       '#type' => 'search',
       '#title' => $this->t($settings['input_label']),
       '#placeholder' => $this->t($settings['input_placeholder']),
-      '#default_value' => isset($values['keys']) ? $values['keys'] : $defaultValues['keys'],
+      '#default_value' => $keyValue,
     ];
 
-    $form['search_block'] = [
+    $form['plugins'] = [
       '#type' => 'hidden',
-      '#title' => $this->t('Search block'),
-      '#default_value' => $this->searchBlock->getPluginId(),
+      '#default_value' => $this->getPluginIds($form_state),
+      '#access' => FALSE,
     ];
 
     $form['actions']['#type'] = 'actions';
@@ -55,58 +60,59 @@ class SearchBlockFormBase extends FormBase implements SearchBlockFormInterface {
       '#submit' => ['::submitForm']
     ];
 
-    if (!is_null($this->searchBlock)) {
-      foreach ($this->searchBlock->getEnabledPlugins() as $plugin) {
-        $plugin->searchForm($form, $form_state);
-      }
+    foreach ($this->getPlugins($form_state) as $plugin) {
+      $plugin->searchForm($form, $form_state);
     }
 
     return $form;
+  }
+
+  protected function getPluginIds(FormStateInterface $formState = NULL) {
+    $plugins = $this->getPlugins($formState);
+
+    $ids = [];
+
+    foreach ($plugins as $plugin) {
+      $ids[] = $plugin->getId();
+    }
+
+    return $ids;
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    if (is_null($this->searchBlock) && $form_state->hasValue('search_block')) {
-      $this->searchBlock = Block::load($form_state->getValue('search_block'));
+    $plugins = $this->getPlugins($form_state);
+
+    foreach ($plugins as $plugin) {
+      $plugin->searchFormSubmit($form, $form_state);
     }
 
-    if (!is_null($this->searchBlock)) {
-      $plugins = $this->searchBlock->getEnabledPlugins();
-
-      foreach ($plugins as $plugin) {
-        $plugin->searchFormSubmit($form, $form_state);
-      }
-
-      $response = NULL;
-      foreach ($plugins as $plugin) {
-
-        $currentResponse = $plugin->processSearch($form_state);
-
-        if (!is_null($response)) {
-          $response = $currentResponse;
-        }
-      }
-
-      if (!is_null($response)) {
-        return $response;
-      }
+    foreach ($plugins as $plugin) {
+      $plugin->processSearch($form_state);
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getSearchBlock() {
-    return $this->searchBlock;
+  public function getPlugins(FormStateInterface $formState = NULL) {
+    if (is_null($this->plugins) && $formState->hasValue('plugins')) {
+      /** @var \Drupal\search_block\SearchBlockPluginManager $pluginManager */
+      $pluginManager = \Drupal::getContainer()->get('plugin.manager.search_block_plugin');
+
+      $this->setPlugins($pluginManager->getPlugins($formState->getValue('search_block')));
+    }
+
+    return $this->plugins;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setSearchBlock(SearchBlockInterface $searchBlock) {
-    $this->searchBlock = $searchBlock;
+  public function setPlugins(array $plugins = []) {
+    $this->plugins = $plugins;
   }
 
   /**
@@ -121,15 +127,27 @@ class SearchBlockFormBase extends FormBase implements SearchBlockFormInterface {
     ];
   }
 
+  protected function getKeysFromUrl() {
+    $current_path = \Drupal::service('path.current')->getPath();
+
+    $keys = '';
+
+    if (strpos($current_path, '/search/site/') === 0) {
+      $parts = explode('/', $current_path);
+
+      $last = array_pop($parts);
+
+      $keys = urldecode($last);
+    }
+
+    return $keys;
+  }
+
   /**
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    $settings = (!is_null($this->searchBlock))
-      ? $this->searchBlock->getConfiguration()
-      : [];
-
-    return $settings + $this->defaultConfiguration();
+    return $this->defaultConfiguration();
   }
 
   /**

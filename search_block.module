@@ -1,0 +1,13 @@
+<?php
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function search_block_form_search_block_search_block_form_alter(&$form, FormStateInterface $form_state) {
+  if ($form['#method'] == 'get') {
+    $form['form_build_id']['#access'] = FALSE;
+    $form['form_token']['#access'] = FALSE;
+    $form['form_id']['#access'] = FALSE;
+  }
+}

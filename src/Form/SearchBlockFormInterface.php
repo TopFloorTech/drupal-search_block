@@ -1,9 +1,11 @@
 <?php
 
-namespace Drupal\search_blocks\Form;
+namespace Drupal\search_block\Form;
 
 use Drupal\Core\Form\FormInterface;
-use Drupal\search_blocks\Plugin\Block\SearchBlockInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\search_block\Plugin\Block\SearchBlockInterface;
+use Drupal\search_block\Plugin\SearchBlockPlugin\SearchBlockPluginInterface;
 
 /**
  * Defines a Search Block Form interface.
@@ -13,18 +15,20 @@ interface SearchBlockFormInterface extends FormInterface {
   /**
    * Gets the search block associated with this form, or NULL.
    *
-   * @return SearchBlockInterface|NULL
-   *   The search block, or NULL.
+   * @param \Drupal\Core\Form\FormStateInterface $formState
+   *   The optional form state.
+   *
+   * @return SearchBlockPluginInterface[]
+   *   The search block plugins
    */
-  public function getSearchBlock();
+  public function getPlugins(FormstateInterface $formState = NULL);
 
   /**
    * Sets the search block associated with this form.
    *
-   * @param \Drupal\search_blocks\Plugin\Block\SearchBlockInterface $searchBlock
-   *   The search block to associate with this form.
+   * @param SearchBlockPluginInterface[] $plugins
    */
-  public function setSearchBlock(SearchBlockInterface $searchBlock);
+  public function setPlugins(array $plugins);
 
   /**
    * Get the default configuration of this form to use if no search block is

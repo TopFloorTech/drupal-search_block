@@ -1,15 +1,22 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\SearchBlockPlugin;
+namespace Drupal\search_block\Plugin\SearchBlockPlugin;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\search_blocks\Plugin\Block\SearchBlockInterface;
+use Drupal\search_block\Plugin\Block\SearchBlockInterface;
 
 /**
  * Provides an interface describing the a search block processor plugin.
  */
 interface SearchBlockPluginInterface extends ConfigurablePluginInterface {
+
+  /**
+   * Gets the plugin's ID.
+   *
+   * @return string
+   */
+  public function getId();
 
   /**
    * Gets the search block associated with this plugin instance.
@@ -22,7 +29,7 @@ interface SearchBlockPluginInterface extends ConfigurablePluginInterface {
   /**
    * Sets the search block associated with this plugin.
    *
-   * @param \Drupal\search_blocks\Plugin\Block\SearchBlockInterface $searchBlock
+   * @param \Drupal\search_block\Plugin\Block\SearchBlockInterface $searchBlock
    *   The search block.
    */
   public function setSearchBlock(SearchBlockInterface $searchBlock);

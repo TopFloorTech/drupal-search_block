@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\Block;
+namespace Drupal\search_block\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\search_blocks\Form\SearchBlockForm;
-use Drupal\search_blocks\SearchBlockPluginManager;
+use Drupal\search_block\Form\SearchBlockForm;
+use Drupal\search_block\SearchBlockPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class SearchBlockBase extends BlockBase implements SearchBlockInterface, ContainerFactoryPluginInterface {
@@ -22,7 +22,7 @@ abstract class SearchBlockBase extends BlockBase implements SearchBlockInterface
    * @param array $configuration
    * @param string $plugin_id
    * @param mixed $plugin_definition
-   * @param \Drupal\search_blocks\SearchBlockPluginManager $pluginManager
+   * @param \Drupal\search_block\SearchBlockPluginManager $pluginManager
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, SearchBlockPluginManager $pluginManager) {
     $this->pluginManager = $pluginManager;
@@ -34,11 +34,14 @@ abstract class SearchBlockBase extends BlockBase implements SearchBlockInterface
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    /** @var SearchBlockPluginManager $searchBlockHandlerManager */
+    $searchBlockHandlerManager = $container->get('plugin.manager.search_block_plugin');
+
     return new static(
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('plugin.manager.search_block_plugin')
+      $searchBlockHandlerManager
     );
   }
 
@@ -156,7 +159,7 @@ abstract class SearchBlockBase extends BlockBase implements SearchBlockInterface
     $element = [];
 
     $form = new SearchBlockForm();
-    $form->setSearchBlock($this);
+    $form->setPlugins($this->getEnabledPlugins());
 
     $element['header'] = $this->getProcessedTextField('header_content');
     $element['form'] = \Drupal::formBuilder()->getForm($form);

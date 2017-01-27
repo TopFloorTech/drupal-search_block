@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\search_blocks;
+namespace Drupal\search_block;
 
 use Drupal\Component\Plugin\Factory\DefaultFactory;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\search_blocks\Plugin\Block\SearchBlockInterface;
-use Drupal\search_blocks\Plugin\SearchBlockPlugin\SearchBlockPluginInterface;
+use Drupal\search_block\Plugin\Block\SearchBlockInterface;
+use Drupal\search_block\Plugin\SearchBlockPlugin\SearchBlockPluginInterface;
 
 /**
  * Provides a SearchBlockPlugin plugin manager.
@@ -22,12 +22,12 @@ class SearchBlockPluginManager extends DefaultPluginManager {
       'Plugin/SearchBlockPlugin',
       $namespaces,
       $module_handler,
-      'Drupal\search_blocks\Plugin\SearchBlockPlugin\SearchBlockPluginInterface',
-      'Drupal\search_blocks\Annotation\SearchBlockPlugin'
+      'Drupal\search_block\Plugin\SearchBlockPlugin\SearchBlockPluginInterface',
+      'Drupal\search_block\Annotation\SearchBlockPlugin'
     );
 
-    $this->alterInfo('search_block_plugin_info');
-    $this->setCacheBackend($cache_backend, 'search_block_plugin_info_plugins');
+    $this->alterInfo('search_block_handler_info');
+    $this->setCacheBackend($cache_backend, 'search_block_handler_info_plugins');
     $this->factory = new DefaultFactory($this->getDiscovery());
   }
 
@@ -37,10 +37,10 @@ class SearchBlockPluginManager extends DefaultPluginManager {
    * @param array $ids
    *   The plugin IDs to load.
    *
-   * @param \Drupal\search_blocks\Plugin\Block\SearchBlockInterface $searchBlock
+   * @param \Drupal\search_block\Plugin\Block\SearchBlockInterface $searchBlock
    *   The search block to associate with each plugin.
    *
-   * @return \Drupal\search_blocks\Plugin\SearchBlockPlugin\SearchBlockPluginInterface[] The enabled search block plugins.
+   * @return \Drupal\search_block\Plugin\SearchBlockPlugin\SearchBlockPluginInterface[] The enabled search block plugins.
    * The enabled search block plugins.
    */
   public function getPlugins(array $ids, SearchBlockInterface $searchBlock = NULL) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\search_blocks\Plugin\SearchBlockPlugin;
+namespace Drupal\search_block\Plugin\SearchBlockPlugin;
 
 use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\search_blocks\Annotation\SearchBlockPlugin;
+use Drupal\search_block\Annotation\SearchBlockPlugin;
 
 /**
  * @SearchBlockPlugin(

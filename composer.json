@@ -1,8 +1,8 @@
 {
-  "name": "drupal/search_blocks",
+  "name": "drupal/search_block",
   "type": "drupal-module",
-  "description": "Search Blocks",
-  "homepage": "https://github.com/TopFloorTech/drupal-search_blocks",
+  "description": "Search Block",
+  "homepage": "https://github.com/TopFloorTech/drupal-search_block",
   "license": "GPL-2.0+",
   "minimum-stability": "dev"
 }
